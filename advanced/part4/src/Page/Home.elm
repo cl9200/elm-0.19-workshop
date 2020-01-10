@@ -92,6 +92,10 @@ init session =
 
 view : Model -> { title : String, content : Html Msg }
 view model =
+    let
+        maybeCred =
+            Session.cred model.session
+    in
     { title = "Conduit"
     , content =
         div [ class "home-page" ]
@@ -103,7 +107,7 @@ view model =
                             Loaded feed ->
                                 [ div [ class "feed-toggle" ] <|
                                     List.concat
-                                        [ [ viewTabs model ]
+                                        [ [ viewTabs maybeCred model.feedTab ]
                                         , Feed.viewArticles model.timeZone feed
                                             |> List.map (Html.map GotFeedMsg)
                                         , [ Feed.viewPagination ClickedFeedPage feed ]
@@ -160,16 +164,16 @@ viewBanner =
     💡 HINT: It may end up with multiple arguments!
 
 -}
-viewTabs : Model -> Html Msg
-viewTabs model =
-    case model.feedTab of
+viewTabs : Maybe Cred -> FeedTab -> Html Msg
+viewTabs maybeCred feedTab =
+    case feedTab of
         YourFeed cred ->
             Feed.viewTabs [] (yourFeed cred) [ globalFeed ]
 
         GlobalFeed ->
             let
                 otherTabs =
-                    case Session.cred model.session of
+                    case maybeCred of
                         Just cred ->
                             [ yourFeed cred ]
 
@@ -181,7 +185,7 @@ viewTabs model =
         TagFeed tag ->
             let
                 otherTabs =
-                    case Session.cred model.session of
+                    case maybeCred of
                         Just cred ->
                             [ yourFeed cred, globalFeed ]
 
