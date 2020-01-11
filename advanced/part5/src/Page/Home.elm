@@ -17,7 +17,7 @@ import HttpBuilder
 import Loading
 import Log
 import Page
-import PaginatedList exposing (PaginatedList, page, total)
+import PaginatedList exposing (PaginatedList, view)
 import Session exposing (Session)
 import Task exposing (Task)
 import Time
@@ -109,7 +109,7 @@ view model =
                                           ]
                                         , Feed.viewArticles model.timeZone feed
                                             |> List.map (Html.map GotFeedMsg)
-                                        , [ viewPagination (Feed.articles feed) ]
+                                        , [ PaginatedList.view (Feed.articles feed) pageLink ]
                                         ]
                                 ]
 
@@ -165,19 +165,24 @@ then refactor both Page.Home and Page.Profile to use it!
 (You'll need to introduce at least one extra argument for this to work.)
 
 -}
-viewPagination : PaginatedList (Article Preview) -> Html Msg
-viewPagination list =
-    let
-        viewPageLink currentPage =
-            pageLink currentPage (currentPage == page list)
-    in
-    if total list > 1 then
-        List.range 1 (total list)
-            |> List.map viewPageLink
-            |> ul [ class "pagination" ]
 
-    else
-        Html.text ""
+
+
+--viewPagination : PaginatedList (Article Preview) -> Html Msg
+--viewPagination list =
+--    let
+--        viewPageLink currentPage =
+--            pageLink currentPage (currentPage == page list)
+--    in
+--    if total list > 1 then
+--        List.range 1 (total list)
+--            |> List.map viewPageLink
+--            |> ul [ class "pagination" ]
+--
+--    else
+--        Html.text ""
+--
+--
 
 
 pageLink : Int -> Bool -> Html Msg

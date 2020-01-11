@@ -1,4 +1,4 @@
-module PaginatedList exposing (PaginatedList, fromList, fromRequestBuilder, map, page, total, values)
+module PaginatedList exposing (PaginatedList, fromList, fromRequestBuilder, map, values, view)
 
 import Html exposing (Html, a, li, text, ul)
 import Html.Attributes exposing (class, classList, href)
@@ -87,3 +87,18 @@ fromRequestBuilder resultsPerPage pageNumber builder =
 
 
 -- VIEW
+
+
+view : PaginatedList a -> (Int -> Bool -> Html msg) -> Html msg
+view list pageLink =
+    let
+        viewPageLink currentPage =
+            pageLink currentPage (currentPage == page list)
+    in
+    if total list > 1 then
+        List.range 1 (total list)
+            |> List.map viewPageLink
+            |> ul [ class "pagination" ]
+
+    else
+        Html.text ""
