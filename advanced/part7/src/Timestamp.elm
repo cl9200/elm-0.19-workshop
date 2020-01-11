@@ -4,6 +4,7 @@ import Html exposing (Html, span, text)
 import Html.Attributes exposing (class)
 import Iso8601
 import Json.Decode as Decode exposing (Decoder, fail, succeed)
+import Json.Decode.Pipeline exposing (required)
 import Time exposing (Month(..))
 
 
@@ -24,20 +25,31 @@ view timeZone timestamp =
 -}
 iso8601Decoder : Decoder Time.Posix
 iso8601Decoder =
-    {- 👉 TODO: Use the following function to decode this Time.Posix value:
+    Decode.string
+        |> Decode.andThen decodeHelp
 
 
-       Iso8601.toTime : String -> Result (List DeadEnd) Time.Posix
+decodeHelp : String -> Decoder Time.Posix
+decodeHelp str =
+    case Iso8601.toTime str of
+        Ok time ->
+            Decode.succeed time
+
+        Err _ ->
+            Decode.fail "Decode Fail"
 
 
-       ❕ NOTE: You can disregard the (List DeadEnd) here. No need to use it to complete this exercise!
 
-       💡 HINT: Decode.andThen will be useful here.
-    -}
-    "..."
+{- 👉 TODO: Use the following function to decode this Time.Posix value:
 
 
+   Iso8601.toTime : String -> Result (List DeadEnd) Time.Posix
 
+
+   ❕ NOTE: You can disregard the (List DeadEnd) here. No need to use it to complete this exercise!
+
+   💡 HINT: Decode.andThen will be useful here.
+-}
 -- FORMAT
 
 

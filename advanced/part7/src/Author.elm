@@ -1,20 +1,19 @@
-module Author
-    exposing
-        ( Author(..)
-        , FollowedAuthor
-        , UnfollowedAuthor
-        , decoder
-        , fetch
-        , follow
-        , followButton
-        , profile
-        , requestFollow
-        , requestUnfollow
-        , unfollow
-        , unfollowButton
-        , username
-        , view
-        )
+module Author exposing
+    ( Author(..)
+    , FollowedAuthor
+    , UnfollowedAuthor
+    , decoder
+    , fetch
+    , follow
+    , followButton
+    , profile
+    , requestFollow
+    , requestUnfollow
+    , unfollow
+    , unfollowButton
+    , username
+    , view
+    )
 
 {-| The author of an Article. It includes a Profile.
 
@@ -54,7 +53,7 @@ import Html.Events exposing (onClick)
 import Http
 import HttpBuilder exposing (RequestBuilder, withExpect)
 import Json.Decode as Decode exposing (Decoder)
-import Json.Decode.Pipeline exposing (custom, optional, required)
+import Json.Decode.Pipeline exposing (custom, optional, required, resolve)
 import Json.Encode as Encode exposing (Value)
 import Profile exposing (Profile)
 import Route exposing (Route)
@@ -192,7 +191,7 @@ toggleFollowButton txt extraClasses msgWhenClicked uname =
             "btn btn-sm " ++ String.join " " extraClasses ++ " action-btn"
 
         caption =
-            " " ++ txt ++ " " ++ Username.toString uname
+            "\u{00A0}" ++ txt ++ " " ++ Username.toString uname
     in
     Html.button [ class classStr, onClick msgWhenClicked ]
         [ i [ class "ion-plus-round" ] []
@@ -210,9 +209,10 @@ decoder maybeCred =
 
        💡 HINT: `decoderHelp` will help here, but slightly altering its type may make things easier...
     -}
-    Decode.succeed "..."
+    Decode.succeed (decoderHelp maybeCred)
         |> custom Profile.decoder
         |> required "username" Username.decoder
+        |> resolve
 
 
 decoderHelp : Maybe Cred -> Profile -> Username -> Decoder Author
