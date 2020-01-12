@@ -34,6 +34,11 @@ parser =
         , Parser.map Login (s "login")
         , Parser.map Logout (s "logout")
         , Parser.map Profile (s "profile" </> Username.urlParser)
+        , Parser.map Settings (s "settings")
+        , Parser.map Register (s "register")
+        , Parser.map Article (s "article" </> Slug.urlParser)
+        , Parser.map NewArticle (s "editor")
+        , Parser.map EditArticle (s "editor" </> Slug.urlParser)
 
         -- 👉 TODO /settings       →  Settings
         -- 👉 TODO /register       →  Register
